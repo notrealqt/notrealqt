@@ -8,4 +8,4 @@
 # Lines starting with # are ignored. Only public repos can be shown.
 # notrealqt.github.io    website    active
 
-SwinJSCC-secure        research   active
+SwinJSCC-secure        research
