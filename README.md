@@ -15,7 +15,10 @@
 ## Currently Working On
 
 <!-- ACTIVE:START -->
-_Will appear after the first workflow run._
+- [**notrealqt.github.io**](https://github.com/notrealqt/notrealqt.github.io): No description yet
+- [**SwinJSCC-secure**](https://github.com/notrealqt/SwinJSCC-secure): No description yet
+- [**SteamMining**](https://github.com/notrealqt/SteamMining): No description yet
+- [**RestaurantManagementSystem**](https://github.com/notrealqt/RestaurantManagementSystem): No description yet
 <!-- ACTIVE:END -->
 
 ## All Repositories
@@ -29,5 +32,15 @@ Untagged repos go under "Other Projects". Forks, archived repos and this repo ar
 -->
 
 <!-- REPOS:START -->
-_Will appear after the first workflow run._
+### Other Projects
+
+| Repository | Description | Language | Updated |
+|---|---|---|---|
+| [**notrealqt.github.io**](https://github.com/notrealqt/notrealqt.github.io) | — | TypeScript | 2026-10-23 |
+| [**SwinJSCC-secure**](https://github.com/notrealqt/SwinJSCC-secure) | — | Python | 2026-06-18 |
+| [**SteamMining**](https://github.com/notrealqt/SteamMining) | — | Jupyter Notebook | 2025-05-23 |
+| [**RestaurantManagementSystem**](https://github.com/notrealqt/RestaurantManagementSystem) | — | Java | 2024-05-28 |
+| [**Escigma**](https://github.com/notrealqt/Escigma) ⭐ 2 | Java Project | Java | 2024-01-19 |
+
+<sub>Last updated: 2026-11-24</sub>
 <!-- REPOS:END -->
