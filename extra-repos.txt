@@ -1,0 +1,8 @@
+# Repos that are NOT under your account but should appear in "All Repositories".
+# One per line: owner/repo  [optional topic: research | networking | website | coursework | active]
+# Lines starting with # are ignored. Only public repos can be shown.
+#
+# Examples:
+# my-lab-org/deepjscc-baseline   research
+# some-collaborator/semcom-dataset   research
+

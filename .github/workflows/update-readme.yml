@@ -1,0 +1,38 @@
+name: Update repository index
+
+on:
+  schedule:
+    - cron: "17 0 * * *"   # every day at 00:17 UTC (07:17 Vietnam time)
+  workflow_dispatch:        # lets you run it manually from the Actions tab
+  push:
+    branches: [main]
+    paths:
+      - scripts/update_readme.py
+      - extra-repos.txt
+      - .github/workflows/update-readme.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regenerate README
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/update_readme.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update repository index"
+          git push
