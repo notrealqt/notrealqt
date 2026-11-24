@@ -15,7 +15,7 @@
 ## Currently Working On
 
 <!-- ACTIVE:START -->
-_Will appear after the first workflow run._
+_Nothing here yet._
 <!-- ACTIVE:END -->
 
 ## All Repositories
@@ -23,5 +23,11 @@ _Will appear after the first workflow run._
 <!-- Both lists are generated from repos.txt. Edit that file, not this section. -->
 
 <!-- REPOS:START -->
-_Will appear after the first workflow run._
+### Research
+
+| Repository | Description | Language | Updated |
+|---|---|---|---|
+| [**SwinJSCC-secure**](https://github.com/notrealqt/SwinJSCC-secure) | — | Python | 2026-06-18 |
+
+<sub>Last updated: 2026-11-24</sub>
 <!-- REPOS:END -->
