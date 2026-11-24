@@ -1,7 +1,7 @@
-"""Regenerate the repo sections of README.md from the GitHub API.
+"""Regenerate the repo sections of README.md from repos.txt and the GitHub API.
 
-Runs daily in GitHub Actions. Rewrites the text between the
-ACTIVE:START/END and REPOS:START/END markers in README.md.
+Only repos listed in repos.txt are shown. Runs daily in GitHub Actions and
+rewrites the text between the ACTIVE:START/END and REPOS:START/END markers.
 """
 
 import json
@@ -16,16 +16,16 @@ USER = os.environ.get("GITHUB_REPOSITORY_OWNER", "notrealqt")
 TOKEN = os.environ.get("GITHUB_TOKEN", "")
 ROOT = Path(__file__).resolve().parent.parent
 README = ROOT / "README.md"
-EXTRA_FILE = ROOT / "extra-repos.txt"
+LIST_FILE = ROOT / "repos.txt"
 
-# topic -> section title, in display order
+# section keyword in repos.txt -> heading, in display order
 SECTIONS = {
     "research": "Research",
     "networking": "Networking & Infrastructure",
     "website": "Website",
     "coursework": "Coursework",
+    "other": "Other Projects",
 }
-OTHER = "Other Projects"
 
 
 def api_get(url):
@@ -36,36 +36,28 @@ def api_get(url):
         return json.load(resp)
 
 
-def fetch_own():
-    """All public repos you own, minus forks, archived repos and this profile repo."""
-    repos, page = [], 1
-    while True:
-        batch = api_get(f"https://api.github.com/users/{USER}/repos?per_page=100&page={page}&type=owner")
-        if not batch:
-            break
-        repos.extend(batch)
-        page += 1
-    return [r for r in repos if not (r["fork"] or r["archived"] or r["name"].lower() == USER.lower())]
-
-
-def fetch_extra():
-    """Repos from other accounts listed in extra-repos.txt as `owner/repo [topic]`."""
-    if not EXTRA_FILE.exists():
-        return []
+def load_list():
+    """Read repos.txt and fetch each listed repo's details from GitHub."""
     repos = []
-    for line in EXTRA_FILE.read_text(encoding="utf-8").splitlines():
+    for line in LIST_FILE.read_text(encoding="utf-8").splitlines():
         line = line.split("#", 1)[0].strip()
         if not line:
             continue
-        full_name, *topic = line.split()
+        name, *rest = line.split()
+        section = rest[0].lower() if rest else "other"
+        if section not in SECTIONS:
+            print(f"Unknown section '{section}' for {name}; using 'other'")
+            section = "other"
+        full_name = name if "/" in name else f"{USER}/{name}"
         try:
             r = api_get(f"https://api.github.com/repos/{full_name}")
         except Exception as e:  # private, renamed or deleted: skip it, keep going
             print(f"Skipping {full_name}: {e}")
             continue
-        r["name"] = r["full_name"]  # show owner/repo so it's clear it isn't yours
-        if topic:
-            r["topics"] = [topic[0]]
+        # your own repos show as just the name; others as owner/repo
+        r["display"] = r["name"] if r["owner"]["login"].lower() == USER.lower() else r["full_name"]
+        r["section"] = section
+        r["active"] = "active" in (x.lower() for x in rest[1:])
         repos.append(r)
     return repos
 
@@ -74,14 +66,13 @@ def escape(text):
     return (text or "").replace("|", "\\|").replace("\n", " ").strip()
 
 
-def build_active(repos, limit=4):
-    """Repos tagged `active`; if none are tagged, the most recently pushed ones."""
-    tagged = [r for r in repos if "active" in r.get("topics", [])]
-    picks = tagged or sorted(repos, key=lambda r: r["pushed_at"], reverse=True)[:limit]
+def build_active(repos):
+    picks = [r for r in repos if r["active"]]
     if not picks:
         return "_Nothing here yet._"
     return "\n".join(
-        f"- [**{r['name']}**]({r['html_url']}): {escape(r['description']) or 'No description yet'}"
+        f"- [**{r['display']}**]({r['html_url']})"
+        + (f": {escape(r['description'])}" if r["description"] else "")
         for r in picks
     )
 
@@ -92,7 +83,7 @@ def build_section(title, repos):
         stars = f" ⭐ {r['stargazers_count']}" if r.get("stargazers_count") else ""
         homepage = f" · [demo]({r['homepage']})" if r.get("homepage") else ""
         lines.append(
-            f"| [**{r['name']}**]({r['html_url']}){stars} "
+            f"| [**{r['display']}**]({r['html_url']}){stars} "
             f"| {escape(r['description']) or '—'}{homepage} "
             f"| {r['language'] or '—'} | {r['pushed_at'][:10]} |"
         )
@@ -100,19 +91,20 @@ def build_section(title, repos):
 
 
 def build_index(repos):
-    groups = {title: [] for title in [*SECTIONS.values(), OTHER]}
-    for r in repos:
-        topics = r.get("topics", [])
-        title = next((t for topic, t in SECTIONS.items() if topic in topics), OTHER)
-        groups[title].append(r)
-    parts = [build_section(t, rs) for t, rs in groups.items() if rs]
+    parts = []
+    for key, title in SECTIONS.items():
+        group = [r for r in repos if r["section"] == key]
+        if group:
+            parts.append(build_section(title, group))
+    if not parts:
+        parts.append("_No repositories listed yet._")
     parts.append(f"<sub>Last updated: {datetime.now(timezone.utc):%Y-%m-%d}</sub>")
     return "\n\n".join(parts)
 
 
 def main():
     text = README.read_text(encoding="utf-8")
-    repos = fetch_own() + fetch_extra()
+    repos = load_list()
     for name, body in {"ACTIVE": build_active(repos), "REPOS": build_index(repos)}.items():
         start, end = f"<!-- {name}:START -->", f"<!-- {name}:END -->"
         if start not in text or end not in text:

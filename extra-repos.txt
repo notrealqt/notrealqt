@@ -1,8 +1,11 @@
-# Repos that are NOT under your account but should appear in "All Repositories".
-# One per line: owner/repo  [optional topic: research | networking | website | coursework | active]
-# Lines starting with # are ignored. Only public repos can be shown.
+# Repos to show on your profile. Anything NOT listed here is hidden.
 #
-# Examples:
-# my-lab-org/deepjscc-baseline   research
-# some-collaborator/semcom-dataset   research
+# Format (one per line):   repo   section   [active]
+#   repo     your repo name (e.g. SwinJSCC-secure), or owner/repo for someone else's
+#   section  research | networking | website | coursework | other
+#   active   optional: also show it under "Currently Working On"
+#
+# Lines starting with # are ignored. Only public repos can be shown.
+# notrealqt.github.io    website    active
 
+SwinJSCC-secure        research   active

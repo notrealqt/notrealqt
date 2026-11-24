@@ -20,13 +20,7 @@ _Will appear after the first workflow run._
 
 ## All Repositories
 
-<!--
-Grouping: add one of these topics to a repo (repo page → ⚙ next to "About" → Topics):
-  research → Research · networking → Networking & Infrastructure
-  website → Website   · coursework → Coursework
-  active   → forces the repo into "Currently Working On"
-Untagged repos go under "Other Projects". Forks, archived repos and this repo are hidden.
--->
+<!-- Both lists are generated from repos.txt. Edit that file, not this section. -->
 
 <!-- REPOS:START -->
 _Will appear after the first workflow run._
