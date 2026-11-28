@@ -27,5 +27,5 @@ _Nothing here yet._
 |---|---|---|---|
 | [**SwinJSCC-secure**](https://github.com/notrealqt/SwinJSCC-secure) | Implementation of "Secure Semantic Communications with Adversarial Training and Active Eavesdropper" | Python | 2026-06-18 |
 
-<sub>Last updated: 2026-11-27</sub>
+<sub>Last updated: 2026-11-28</sub>
 <!-- REPOS:END -->
